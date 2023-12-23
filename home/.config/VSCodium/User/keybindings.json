@@ -1,0 +1,61 @@
+// Place your key bindings in this file to override the defaultsauto[]
+[
+    {
+        "key": "alt+s",
+        "command": "workbench.action.toggleSidebarVisibility"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "-workbench.action.toggleSidebarVisibility"
+    },
+    {
+        "key": "shift+alt+s",
+        "command": "workbench.action.toggleActivityBarVisibility"
+    },
+    {
+        "key": "alt+q",
+        "command": "workbench.action.toggleStatusbarVisibility"
+    },
+    {
+        "key": "alt+e",
+        "command": "workbench.view.explorer",
+        "when": "viewContainer.workbench.view.explorer.enabled"
+    },
+    {
+        "key": "ctrl+shift+e",
+        "command": "-workbench.view.explorer",
+        "when": "viewContainer.workbench.view.explorer.enabled"
+    },
+    {
+        "key": "alt+m",
+        "command": "editor.action.toggleMinimap"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "code-runner.run"
+    },
+    {
+        "key": "ctrl+alt+n",
+        "command": "-code-runner.run"
+    },
+    {
+        "key": "ctrl+alt+s",
+        "command": "workbench.action.toggleAuxiliaryBar"
+    },
+    {
+        "key": "ctrl+alt+b",
+        "command": "-workbench.action.toggleAuxiliaryBar"
+    },
+    {
+        "key": "ctrl+alt+b",
+        "command": "code-runner.stop"
+    },
+    {
+        "key": "ctrl+alt+m",
+        "command": "-code-runner.stop"
+    },
+    {
+        "key": "alt+a",
+        "command": "editor.emmet.action.wrapWithAbbreviation"
+    }
+]

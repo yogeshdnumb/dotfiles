@@ -1,0 +1,168 @@
+set shell bash
+set ifs "\n"
+
+set icons
+set drawbox
+set ignorecase
+set wrapscroll
+set dircounts
+set info size
+set mouse true
+set sortby ext
+
+map d 
+map e
+map m
+map r
+map i
+map n
+
+map x cut
+map dd push :delete<enter>
+map b :bg 
+map f :fzf_jump
+map <c-f> :fzf_search
+map e extract
+map dr &dragon-drop -x "$f"
+map . :set hidden!
+map mm push :mkdir<space>
+map mn push $touch<space>
+map a mark-save
+map L follow_link
+map n newfold
+map <c-c> yank-basename-without-extension
+map <c-y> yank-path
+map o open-with
+map O &$fx
+map i $bat $f --pager="less -R" 
+map sh share
+map I !exiftool "$fx"
+map C edit-config
+map ss !qrcp send "$fx"
+map sr !qrcp receive
+
+map rr push rw<a-b><a-b><a-f> # before extension
+map re push rw<c-u> # new rename
+map rw rename # at the very end
+map rq push rw<c-a> # at the very beginning
+map rd push rw<a-b> # after extension
+map rt bulk-rename 
+map sb $subliminal download -l en "$fx"
+
+cmd bulk-rename ${{
+    old="$(mktemp)"
+    new="$(mktemp)"
+    if [ -n "$fs" ]; then
+        fs="$(basename -a $fs)"
+    else
+        fs="$(ls)"
+    fi
+    printf '%s\n' "$fs" >"$old"
+    printf '%s\n' "$fs" >"$new"
+    nvim "$new"
+    [ "$(wc -l < "$new")" -ne "$(wc -l < "$old")" ] && exit
+    paste "$old" "$new" | while IFS= read -r names; do
+        src="$(printf '%s' "$names" | cut -f1)"
+        dst="$(printf '%s' "$names" | cut -f2)"
+        if [ "$src" = "$dst" ] || [ -e "$dst" ]; then
+            continue
+        fi
+        mv -- "$src" "$dst"
+    done
+    rm -- "$old" "$new"
+    lf -remote "send $id unselect"
+}}
+
+cmd share %curl -F"file=@$fx" https://0x0.st | xsel -b;lf -remote "send $id echo shared"
+cmd open-with &{{
+    exec $(rofi -dmenu -location 2  -l 1 -p "open with:") "$fx"
+  }}
+
+cmd yank-dirname $dirname -- "$f" | head -c-1 | xsel -b
+cmd yank-path $printf '%s' "$fx" | xsel -b
+cmd yank-basename $basename -a -- $fx | head -c-1 | xsel -b
+cmd yank-basename-without-extension &basename -a -- $fx | rev | cut -d. -f2- | rev | head -c-1 | xsel -b ;lf -remote "send $id echo basename copied"
+
+cmd bookmark_jump ${{
+    res="$(cat $LF_BOOKMARK_PATH/$(ls $LF_BOOKMARK_PATH | fzf))"
+    lf -remote "send $id cd \"$res\""
+}}
+
+cmd bookmark_create ${{
+    read ans
+    echo $PWD > $LF_BOOKMARK_PATH/$ans
+}}
+
+cmd on-cd &{{
+    # '&' commands run silently in background (which is what we want here),
+    # but are not connected to stdout.
+    # To make sure our escape sequence still reaches stdout we pipe it to /dev/tty
+    # printf "\033]0; $PWD\007" > /dev/tty
+    printf "\033]0; $(pwd | sed "s|$HOME|~|") - lf\007" > /dev/tty
+}}
+
+cmd newfold ${{
+    set -f
+    read newd
+    printf "Directory name: "
+    mkdir -- "$newd"
+    mv -- $fx "$newd"
+}}
+
+cmd follow_link %{{
+  lf -remote "send ${id} select '$(readlink $f)'"
+}}
+
+cmd extract ${{
+    set -f
+    atool -x $f
+}}
+
+cmd mkdir %{{
+    IFS=" "
+    mkdir -p -- "$*"
+    lf -remote "send $id select \"$*\""
+}}
+
+cmd bg &{{
+	cp "$f" ~/.homesick/repos/dotfiles/home/.config/wallpaper
+	wpg -a "$f"
+	wpg -s "$f"
+	xdotool key "Super+Shift+r"
+}}
+
+cmd fzf_jump ${{
+    res="$(find . -maxdepth 3 | fzf --reverse --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    if [ -d "$res" ] ; then
+        cmd="cd"
+    elif [ -f "$res" ] ; then
+        cmd="select"
+    else
+        exit 0
+    fi
+    lf -remote "send $id $cmd \"$res\""
+}}
+
+cmd fzf_search ${{
+    res="$( \
+        RG_PREFIX="rg --column --line-number --no-heading --color=always \
+            --smart-case "
+        FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
+            fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+            --ansi --layout=reverse --header 'Search in files' \
+            | cut -d':' -f1
+    )"
+    [ ! -z "$res" ] && lf -remote "send $id select \"$res\""
+}}
+
+cmd edit-config ${{
+    nvim ~/.config/lf/lfrc
+    lf -remote "send $id source ~/.config/lf/lfrc"
+}}
+
+map C edit-config
+set previewer ctpv
+set cleaner ctpvclear
+&ctpv -s $id
+&ctpvquit $id
+

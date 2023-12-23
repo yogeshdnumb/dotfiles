@@ -1,0 +1,46 @@
+{
+  "bashIde.explainshellEndpoint": "http://localhost:5000",
+  "editor.fontFamily": "'JetBrainsMono Nerd Font','Droid Sans Mono', 'monospace', monospace",
+  "editor.fontLigatures": true,
+  "code-runner.runInTerminal": true,
+  "code-runner.saveFileBeforeRun": true,
+  "security.workspace.trust.enabled": false,
+  "workbench.iconTheme": "bearded-icons",
+  "workbench.colorTheme": "Bearded Theme Solarized",
+  "window.menuBarVisibility": "toggle",
+  "workbench.activityBar.location": "hidden",
+  "editor.minimap.enabled": false,
+  "workbench.startupEditor": "none",
+  "code-runner.executorMap": {
+    "javascript": "bun"
+  },
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "editor.formatOnSave": true,
+  "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
+  "vscode-neovim.neovimInitVimPaths.linux": "~/.config/VSCodium/User",
+  "window.zoomLevel": 1,
+  "files.saveConflictResolution": "overwriteFileOnDisk",
+  "tabby.inlineCompletion.triggerMode": "manual",
+  "tabby.api.endpoint": "http://localhost:8080",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.statusBar.visible": false
+}
